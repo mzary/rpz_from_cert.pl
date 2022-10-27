@@ -1,18 +1,20 @@
 #!/usr/local/bin/perl
 #
 # Create RPZ file from https://hole.cert.pl/domains/domains_hosts.txt 
-# Version 0.1
+# Version 0.2
 # Copyright (c) 2022 mzary
 
 use POSIX qw(strftime);
 use LWP::Simple;
+use LWP::Protocol::https;
 use strict;
+use warnings;
+
+my $CERTdata = get('https://hole.cert.pl/domains/domains_hosts.txt') or die ("Can't fetch URL");
+open (CERT,'<',\$CERTdata) or die $!;
 
 my $RPZfile = '/usr/local/www/apache24/data/RPZ/hole.cert.pl.zone';
 open (RPZ,'>',$RPZfile) or die $!;
-
-my $CERTdata = get('http://hole.cert.pl/domains/domains_hosts.txt');
-open (CERT,'<',\$CERTdata) or die $!;
 
 my $datestring = strftime ("%Y-%m-%d %H:%M:%S %Z", localtime);
 
